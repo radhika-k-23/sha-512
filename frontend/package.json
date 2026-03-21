@@ -2,7 +2,7 @@
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://radhika-k-23.github.io/sha-512/",
+  "homepage": ".",
   "type": "module",
   "scripts": {
     "dev": "vite",
