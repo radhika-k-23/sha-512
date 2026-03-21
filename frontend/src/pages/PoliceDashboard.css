@@ -1,0 +1,92 @@
+/* Forensic Command Center Stylings */
+.forensic-layout {
+  background: #f5f7fa !important;
+}
+
+.forensic-sider {
+  background: #001529 !important;
+  box-shadow: 2px 0 8px rgba(0,0,0,0.15);
+}
+
+.forensic-header {
+  background: #fff !important;
+  padding: 0 24px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  z-index: 10;
+}
+
+.forensic-card {
+  border-radius: 12px !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+  transition: transform 0.3s ease;
+}
+
+.forensic-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1) !important;
+}
+
+.fir-monospace {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  background: #f0f2f5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+  color: #595959;
+}
+
+/* Live System Feed Ticker */
+.system-ticker-container {
+  background: #001529;
+  color: #00f2ff;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  overflow: hidden;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  border-top: 1px solid rgba(0, 242, 255, 0.3);
+}
+
+.ticker-label {
+  font-weight: bold;
+  margin-right: 15px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.ticker-content {
+  display: inline-block;
+  white-space: nowrap;
+  animation: ticker-slide 20s linear infinite;
+}
+
+@keyframes ticker-slide {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.verification-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.stat-bar-card {
+  border-radius: 0 !important;
+  border: none !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  background: #fafafa !important;
+}

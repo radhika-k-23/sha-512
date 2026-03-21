@@ -1,0 +1,151 @@
+/* Cyber-Forensic Login Terminal Styling */
+
+.login-container {
+  min-height: 100vh;
+  background: #000814;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.login-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 53, 102, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 53, 102, 0.2) 1px, transparent 1px);
+  background-size: 40px 40px, 40px 40px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 3D Glass Card Container */
+.glass-card-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 40px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transform: rotateX(2deg);
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+.glass-card:hover {
+  transform: rotateX(0deg) scale(1.01);
+  box-shadow: 0 30px 60px -12px rgba(0, 102, 204, 0.3);
+}
+
+/* Header Glow & Pulse */
+.terminal-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.glow-text {
+  color: #fff !important;
+  text-shadow: 0 0 10px rgba(0, 149, 255, 0.8), 0 0 20px rgba(0, 149, 255, 0.4);
+  letter-spacing: 1px;
+}
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  background: #00f2ff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(0, 242, 255, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 242, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 242, 255, 0); }
+}
+
+/* Modernized Inputs */
+.terminal-input .ant-input,
+.terminal-input .ant-input-affix-wrapper {
+  background: rgba(0, 8, 20, 0.6) !important;
+  border: 1px solid rgba(0, 242, 255, 0.2) !important;
+  color: #fff !important;
+  transition: all 0.3s;
+}
+
+.terminal-input .ant-input-affix-wrapper > input.ant-input {
+  background: transparent !important;
+  color: #fff !important;
+}
+
+.terminal-input .ant-input:hover,
+.terminal-input .ant-input-affix-wrapper:hover {
+  border-color: rgba(0, 242, 255, 0.5) !important;
+}
+
+.terminal-input .ant-input:focus,
+.terminal-input .ant-input-focused,
+.terminal-input .ant-input-affix-wrapper-focused {
+  border-color: #00f2ff !important;
+  box-shadow: 0 0 15px rgba(0, 242, 255, 0.3) !important;
+  background: rgba(0, 8, 20, 0.8) !important;
+}
+
+.terminal-input .ant-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.terminal-input .ant-input-prefix {
+  color: #00f2ff !important;
+  margin-right: 12px;
+}
+
+.terminal-input .ant-input-password-icon {
+  color: rgba(0, 242, 255, 0.6) !important;
+}
+
+/* Electric Button */
+.authenticate-btn {
+  height: 50px !important;
+  background: linear-gradient(135deg, #003566 0%, #00f2ff 100%) !important;
+  border: none !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 4px 15px rgba(0, 242, 255, 0.3) !important;
+  transition: all 0.3s !important;
+}
+
+.authenticate-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 242, 255, 0.5) !important;
+  filter: brightness(1.1);
+}
+
+.decrypting-text {
+  color: #00f2ff;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  margin-top: 10px;
+  display: block;
+}
