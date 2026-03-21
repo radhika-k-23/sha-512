@@ -5,6 +5,7 @@ import PoliceDashboard from './pages/PoliceDashboard'
 import FSLDashboard from './pages/FSLDashboard'
 import JudiciaryDashboard from './pages/JudiciaryDashboard'
 import EvidenceRoomDashboard from './pages/EvidenceRoomDashboard'
+import SystemHealthFooter from './components/SystemHealthFooter'
 
 /** Returns the decoded role from the stored JWT, or null if absent/expired. */
 function getRole() {
@@ -50,6 +51,7 @@ function App() {
         />
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
+      <SystemHealthFooter />
     </div>
   )
 }

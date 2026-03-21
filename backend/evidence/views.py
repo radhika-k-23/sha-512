@@ -43,9 +43,11 @@ class EvidenceFileViewSet(viewsets.ModelViewSet):
         sha512        = compute_sha512(uploaded_file)
         evidence = serializer.save(
             uploaded_by=self.request.user,
+            current_custodian=self.request.user,
             sha512_hash=sha512,
             file_size=uploaded_file.size,
             original_filename=uploaded_file.name,
+            custody_status='IN_FSL' if self.request.user.role == 'FSL' else 'IN_POLICE_CUSTODY'
         )
         ActivityLog.objects.create(
             user=self.request.user,
@@ -53,80 +55,45 @@ class EvidenceFileViewSet(viewsets.ModelViewSet):
             target=f"evidence:{evidence.id}",
             ip_address=_get_ip(self.request),
             details=(
-                f"File '{evidence.original_filename}' uploaded for Case {evidence.case.fir_number}. "
-                f"SHA-512: {sha512[:16]}…"
+                f"File '{evidence.original_filename}' uploaded and custody initialized. "
+                f"Custodian: {self.request.user.get_full_name()}. SHA-512 Hash Verified."
             ),
         )
-
-    @action(detail=True, methods=['post'], url_path='check_integrity')
-    def check_integrity(self, request, pk=None):
-        """Re-hash the stored file and compare against the recorded SHA-512."""
-        evidence = self.get_object()
-
-        try:
-            with evidence.file.open('rb') as f:
-                ok = verify_integrity(f, evidence.sha512_hash)
-        except FileNotFoundError:
-            return Response(
-                {"integrity": False, "message": "File not found on disk."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        if ok:
-            evidence.is_verified   = True
-            evidence.last_checked_at = timezone.now()
-            evidence.save(update_fields=['is_verified', 'last_checked_at'])
-            action_code = ActivityLog.ACTION_CHECK
-            message     = "Integrity verified — file is unmodified."
-        else:
-            action_code = ActivityLog.ACTION_FAIL
-            message     = "INTEGRITY FAILURE — file has been tampered with!"
-
-        ActivityLog.objects.create(
-            user=request.user,
-            action=action_code,
-            target=f"evidence:{evidence.id}",
-            ip_address=_get_ip(request),
-            details=message,
-        )
-
-        return Response({
-            "integrity": ok,
-            "message":   message,
-            "evidence_id": evidence.id,
-            "sha512_hash": evidence.sha512_hash,
-        })
 
     @action(detail=True, methods=['post'], url_path='receive')
     def receive_evidence(self, request, pk=None):
         """Evidence Room officer receives custody — re-verifies SHA-512 first."""
         if not request.user.role == 'EVIDENCE_ROOM':
-            return Response({'error': 'Only Evidence Room staff can receive evidence.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'error': 'Authorization Refused: Only Evidence Room staff can accept transfers.'}, status=status.HTTP_403_FORBIDDEN)
+        
         evidence = self.get_object()
+        
         try:
             with evidence.file.open('rb') as f:
                 ok = verify_integrity(f, evidence.sha512_hash)
         except FileNotFoundError:
-            return Response({'error': 'File not found on disk.'}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Data Missing: File not found on secure storage.'}, status=status.HTTP_404_NOT_FOUND)
 
         if not ok:
             ActivityLog.objects.create(
                 user=request.user, action=ActivityLog.ACTION_FAIL,
                 target=f"evidence:{evidence.id}", ip_address=_get_ip(request),
-                details="Integrity check FAILED during custody transfer to Evidence Room.",
+                details="CRITICAL: Integrity check FAILED during custody transfer. Tampering detected!",
             )
-            return Response({'error': 'Integrity check failed — file may have been tampered with during transit!'}, status=status.HTTP_409_CONFLICT)
+            return Response({'error': 'Integrity Compromised: Digital hash mismatch detected!'}, status=status.HTTP_409_CONFLICT)
 
-        evidence.custody_status  = 'EVIDENCE_ROOM'
+        evidence.custody_status  = 'IN_EVIDENCE_ROOM'
+        evidence.current_custodian = request.user
         evidence.is_verified     = True
         evidence.last_checked_at = timezone.now()
-        evidence.save(update_fields=['custody_status', 'is_verified', 'last_checked_at'])
+        evidence.save(update_fields=['custody_status', 'current_custodian', 'is_verified', 'last_checked_at'])
+        
         ActivityLog.objects.create(
             user=request.user, action=ActivityLog.ACTION_TRANSFER,
             target=f"evidence:{evidence.id}", ip_address=_get_ip(request),
-            details=f"Custody transferred to Evidence Room by {request.user.get_full_name()}. SHA-512 verified OK.",
+            details=f"Digital Handshake success: Custody accepted by {request.user.get_full_name()}. Integrity Verified.",
         )
-        return Response({'message': 'Evidence received and integrity verified.', 'custody_status': 'EVIDENCE_ROOM'})
+        return Response({'message': 'Evidence received and integrity verified.', 'custody_status': 'IN_EVIDENCE_ROOM'})
 
     @action(detail=True, methods=['get'], url_path='download')
     def download(self, request, pk=None):

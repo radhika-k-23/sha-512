@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Layout, Typography, Table, Button, Input, Card, 
-  Tag, Space, message, Tooltip, Divider
+  Tag, Space, message, Tooltip, Divider, notification
 } from 'antd';
 import { 
   LogoutOutlined, CheckCircleOutlined, WarningOutlined, 
@@ -46,12 +46,22 @@ function EvidenceRoomDashboard() {
   const receiveEvidence = async (id) => {
     setProcessing(prev => ({ ...prev, [id]: true }));
     try {
-      await api.post(`evidence/${id}/receive/`);
-      message.success('Evidence received and integrity re-verified successfully!');
+      const res = await api.post(`evidence/${id}/receive/`);
+      notification.success({
+        message: 'Digital Handshake Verified',
+        description: `Integrity check PASSED. Hash: ${res.data.sha512_hash?.slice(0, 16)}... Custody transferred successfully.`,
+        placement: 'topRight',
+        duration: 5,
+      });
       fetchEvidence();
     } catch (err) {
       const errorMsg = err.response?.data?.error || 'Failed to receive evidence';
-      message.error(`CRITICAL: ${errorMsg}`);
+      notification.error({
+        message: 'SECURITY ALERT: Integrity Failure',
+        description: errorMsg,
+        placement: 'topRight',
+        duration: 0, // Stay until closed
+      });
     } finally {
       setProcessing(prev => ({ ...prev, [id]: false }));
     }
@@ -73,17 +83,24 @@ function EvidenceRoomDashboard() {
 
   const columns = [
     { title: 'File Name', dataIndex: 'original_filename', key: 'file', ellipsis: true },
-    { title: 'Category', dataIndex: 'category', key: 'cat', render: (c) => <Tag>{c}</Tag> },
+    { title: 'Category', dataIndex: 'category', key: 'cat', render: (c) => <Tag color="purple">{c}</Tag> },
     { title: 'Case', dataIndex: 'case_fir', key: 'case_fir', render: (t) => <Text code>{t}</Text> },
+    { title: 'Current Custodian', dataIndex: 'current_custodian_name', key: 'custodian', render: (u) => <Text strong>{u || 'System'}</Text> },
     { 
       title: 'Custody Status', 
       dataIndex: 'custody_status', 
       key: 'status',
-      render: (s) => (
-        <Tag color={s === 'EVIDENCE_ROOM' ? 'blue' : s === 'FSL' ? 'green' : 'orange'}>
-          {s.replace('_', ' ')}
-        </Tag>
-      )
+      render: (s) => {
+        let color = 'gold';
+        if (s === 'IN_EVIDENCE_ROOM') color = 'blue';
+        if (s === 'IN_FSL') color = 'cyan';
+        if (s === 'PENDING_TRANSFER') color = 'volcano';
+        return (
+          <Tag color={color}>
+            {s.replace(/_/g, ' ')}
+          </Tag>
+        );
+      }
     },
     { 
       title: 'SHA-512 Hash', 
@@ -91,7 +108,7 @@ function EvidenceRoomDashboard() {
       key: 'hash', 
       render: (h) => (
         <Tooltip title={h}>
-          <Text code style={{ fontSize: '11px' }}>{h?.slice(0, 12)}...</Text>
+          <Text code style={{ fontSize: '11px', color: '#1890ff' }}>{h?.slice(0, 12)}...</Text>
         </Tooltip>
       )
     },
@@ -100,18 +117,19 @@ function EvidenceRoomDashboard() {
       key: 'action',
       render: (_, record) => (
         <Space>
-          {record.custody_status !== 'EVIDENCE_ROOM' ? (
+          {record.custody_status !== 'IN_EVIDENCE_ROOM' ? (
             <Button 
               type="primary" 
               size="small" 
-              icon={<InboxOutlined />} 
+              icon={<SafetyCertificateOutlined />} 
               loading={processing[record.id]}
               onClick={() => receiveEvidence(record.id)}
+              style={{ backgroundColor: '#52c41a', borderColor: '#52c41a' }}
             >
-              Receive
+              Verify & Accept
             </Button>
           ) : (
-            <Tag color="success" icon={<CheckCircleOutlined />}>Stored & Verified</Tag>
+            <Tag color="success" icon={<CheckCircleOutlined />}>Handshake Verified</Tag>
           )}
           <Button 
             size="small" 

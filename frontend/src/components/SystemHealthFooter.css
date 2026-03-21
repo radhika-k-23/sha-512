@@ -1,0 +1,105 @@
+.system-health-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: linear-gradient(90deg, #0d1117 0%, #161b22 100%);
+  border-top: 1px solid #21262d;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: #8b949e;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.4);
+  transition: border-top-color 0.4s;
+}
+
+.system-health-footer.anomaly {
+  border-top-color: #ff4d4f;
+  animation: anomaly-pulse 1.5s infinite;
+}
+
+@keyframes anomaly-pulse {
+  0%, 100% { box-shadow: 0 -4px 12px rgba(255, 77, 79, 0.3); }
+  50% { box-shadow: 0 -4px 24px rgba(255, 77, 79, 0.7); }
+}
+
+.health-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.health-label {
+  color: #e6edf3;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.health-meta {
+  color: #6e7681;
+  font-size: 11px;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.pulse-dot.green {
+  background: #56d364;
+  box-shadow: 0 0 0 0 rgba(86, 211, 100, 0.7);
+  animation: pulse-green 2s infinite;
+}
+
+.pulse-dot.red {
+  background: #ff4d4f;
+  box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7);
+  animation: pulse-red 1s infinite;
+}
+
+@keyframes pulse-green {
+  0%   { box-shadow: 0 0 0 0 rgba(86, 211, 100, 0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(86, 211, 100, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(86, 211, 100, 0); }
+}
+
+@keyframes pulse-red {
+  0%   { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(255, 77, 79, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 77, 79, 0); }
+}
+
+.ticker-right {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  max-width: 50%;
+}
+
+.ticker-entry {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  animation: slide-in 0.5s ease;
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.ticker-text {
+  color: #6e7681;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 11px;
+}
