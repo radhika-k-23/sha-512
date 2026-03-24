@@ -8,6 +8,7 @@ import {
   InboxOutlined, SafetyCertificateOutlined, DownloadOutlined
 } from '@ant-design/icons';
 import api from '../api/axiosClient';
+import './ForensicTheme.css';
 import DashboardStats from '../components/DashboardStats';
 
 const { Content } = Layout;
@@ -55,7 +56,18 @@ function EvidenceRoomDashboard() {
       });
       fetchEvidence();
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to receive evidence';
+      console.error('Handshake Error:', err.response?.data);
+      const errorData = err.response?.data;
+      let errorMsg = 'Failed to receive evidence';
+
+      if (typeof errorData === 'object' && errorData !== null) {
+        errorMsg = Object.entries(errorData)
+          .map(([key, val]) => `${key}: ${Array.isArray(val) ? val.join(' ') : val}`)
+          .join(' | ');
+      } else if (typeof errorData === 'string') {
+        errorMsg = errorData;
+      }
+
       notification.error({
         message: 'SECURITY ALERT: Integrity Failure',
         description: errorMsg,
@@ -142,16 +154,16 @@ function EvidenceRoomDashboard() {
   ];
 
   return (
-    <Layout className="layout" style={{ minHeight: '100vh', padding: '24px' }}>
-      <Content>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <Title level={2}>
-            <InboxOutlined /> Evidence Room Cabinet
+    <Layout className="forensic-layout-dark">
+      <Content style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', background: 'rgba(5, 5, 16, 0.8)', padding: '15px 24px', borderBottom: '1px solid rgba(0, 242, 255, 0.2)', backdropFilter: 'blur(10px)', borderRadius: '8px' }}>
+          <Title level={2} style={{ margin: 0, color: '#00f2ff' }}>
+            <InboxOutlined /> <span style={{ color: '#00f2ff' }}>Evidence Custody Center</span>
           </Title>
           <Button 
             danger 
             icon={<LogoutOutlined />} 
-            onClick={() => { localStorage.clear(); window.location.href = '/login'; }}
+            onClick={() => { localStorage.clear(); window.location.href = '/#/login'; }}
           >
             Logout
           </Button>
@@ -159,39 +171,55 @@ function EvidenceRoomDashboard() {
 
         <DashboardStats />
 
-        <Card 
-          title="Evidence Intake & Storage" 
-          bordered={false} 
-          className="shadow-sm"
-          extra={
-            <Input.Search
-              placeholder="Search evidence..."
-              onSearch={v => { setSearchText(v); setPage(1); }}
-              style={{ width: 300 }}
-              allowClear
-            />
-          }
-        >
-          <div style={{ marginBottom: '16px' }}>
-            <Text type="secondary">
-              <SafetyCertificateOutlined style={{ color: '#52c41a' }} /> Every intake triggers an automated SHA-512 integrity re-verification.
-            </Text>
-          </div>
-          <Table 
-            columns={columns} 
-            dataSource={evidenceList} 
-            rowKey="id"
-            loading={loading}
-            pagination={{
-              current: page,
-              total: total,
-              pageSize: 15,
-              onChange: (p) => setPage(p),
-              showSizeChanger: false
-            }}
-            size="middle"
+        <div className="animate-fade" style={{ margin: '24px 0' }}>
+          <Alert
+            message={<span style={{ fontWeight: 'bold' }}>Forensic Integrity Protocol SHA-512 Active</span>}
+            description="All evidence intake actions are logged in the immutable audit trail with automated handshake verification."
+            type="info"
+            showIcon
+            className="forensic-panel"
+            style={{ background: 'rgba(0, 242, 255, 0.05)', border: '1px solid rgba(0, 242, 255, 0.3)', color: '#00f2ff' }}
           />
-        </Card>
+        </div>
+
+        <div className="animate-fade" style={{ animationDelay: '0.1s' }}>
+          <Card 
+            title={<span style={{ color: '#00f2ff' }}>Evidence Intake & Storage Vault</span>} 
+            bordered={false} 
+            className="forensic-panel"
+            extra={
+              <Input.Search
+                placeholder="Search evidence ID or filename..."
+                onSearch={v => { setSearchText(v); setPage(1); }}
+                className="forensic-input"
+                style={{ width: 300 }}
+                allowClear
+              />
+            }
+          >
+            <div style={{ marginBottom: '16px' }}>
+              <Text style={{ color: '#8fb1cc' }}>
+                <SafetyCertificateOutlined style={{ color: '#52c41a', marginRight: '6px' }} /> 
+                Every intake triggers an automated SHA-512 integrity re-verification handshake.
+              </Text>
+            </div>
+            <Table 
+              className="forensic-table"
+              columns={columns} 
+              dataSource={evidenceList} 
+              rowKey="id"
+              loading={loading}
+              pagination={{
+                current: page,
+                total: total,
+                pageSize: 15,
+                onChange: (p) => setPage(p),
+                showSizeChanger: false
+              }}
+              size="middle"
+            />
+          </Card>
+        </div>
       </Content>
     </Layout>
   );

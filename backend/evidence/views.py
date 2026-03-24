@@ -49,16 +49,6 @@ class EvidenceFileViewSet(viewsets.ModelViewSet):
             original_filename=uploaded_file.name,
             custody_status='IN_FSL' if self.request.user.role == 'FSL' else 'IN_POLICE_CUSTODY'
         )
-        ActivityLog.objects.create(
-            user=self.request.user,
-            action=ActivityLog.ACTION_UPLOAD,
-            target=f"evidence:{evidence.id}",
-            ip_address=_get_ip(self.request),
-            details=(
-                f"File '{evidence.original_filename}' uploaded and custody initialized. "
-                f"Custodian: {self.request.user.get_full_name()}. SHA-512 Hash Verified."
-            ),
-        )
 
     @action(detail=True, methods=['post'], url_path='receive')
     def receive_evidence(self, request, pk=None):
@@ -88,11 +78,6 @@ class EvidenceFileViewSet(viewsets.ModelViewSet):
         evidence.last_checked_at = timezone.now()
         evidence.save(update_fields=['custody_status', 'current_custodian', 'is_verified', 'last_checked_at'])
         
-        ActivityLog.objects.create(
-            user=request.user, action=ActivityLog.ACTION_TRANSFER,
-            target=f"evidence:{evidence.id}", ip_address=_get_ip(request),
-            details=f"Digital Handshake success: Custody accepted by {request.user.get_full_name()}. Integrity Verified.",
-        )
         return Response({'message': 'Evidence received and integrity verified.', 'custody_status': 'IN_EVIDENCE_ROOM'})
 
     @action(detail=True, methods=['get'], url_path='download')

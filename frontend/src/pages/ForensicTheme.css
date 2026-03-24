@@ -1,0 +1,206 @@
+/* 
+  ForensicTheme.css
+  Universal styling for the Digital Evidence Protection System.
+  Focus: Glassmorphism, Neon Accents, Cyber-Security Aesthetics.
+*/
+
+:root {
+  --cyber-bg: #050510;
+  --cyber-accent: #00f2ff;
+  --cyber-accent-dim: rgba(0, 242, 255, 0.2);
+  --cyber-danger: #ff4d4f;
+  --cyber-success: #00ff64;
+  --glass-bg: rgba(10, 15, 30, 0.65);
+  --glass-border: rgba(0, 242, 255, 0.2);
+  --glass-blur: blur(15px);
+  --text-main: #d8e8f8;
+  --text-dim: #8fb1cc;
+}
+
+/* Base Layout for all Dashboards */
+.forensic-layout-dark {
+  min-height: 100vh;
+  background-color: var(--cyber-bg);
+  background-image: 
+    linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  color: var(--text-main);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Unified Glass Card */
+.forensic-panel {
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border) !important;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.forensic-panel .ant-card-head {
+  border-bottom: 1px solid rgba(0, 242, 255, 0.15);
+  background: rgba(0, 242, 255, 0.03);
+}
+
+.forensic-panel .ant-card-head-title {
+  color: var(--cyber-accent) !important;
+  font-weight: 700 !important;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* Glass Table */
+.forensic-table .ant-table {
+  background: transparent !important;
+}
+
+.forensic-table .ant-table-thead > tr > th {
+  background: rgba(0, 242, 255, 0.08) !important;
+  color: var(--cyber-accent) !important;
+  border-bottom: 2px solid var(--glass-border) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.forensic-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+  color: var(--text-main) !important;
+  padding: 12px 16px !important;
+}
+
+.forensic-table .ant-table-tbody > tr:hover > td {
+  background: rgba(0, 242, 255, 0.05) !important;
+}
+
+/* Ant Design Input/Select Overrides */
+.forensic-input {
+  background: rgba(0, 0, 0, 0.3) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: #fff !important;
+}
+
+.forensic-input:focus, .forensic-input:hover {
+  border-color: var(--cyber-accent) !important;
+  box-shadow: 0 0 8px var(--cyber-accent-dim) !important;
+}
+
+/* Cyber Buttons */
+.cyber-btn-primary {
+  background: rgba(0, 242, 255, 0.1) !important;
+  border: 1px solid var(--cyber-accent) !important;
+  color: var(--cyber-accent) !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cyber-btn-primary:hover {
+  background: var(--cyber-accent) !important;
+  color: #000 !important;
+  box-shadow: 0 0 25px var(--cyber-accent);
+  transform: scale(1.02);
+}
+
+/* Monospace Code Styling */
+.cyber-code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  background: rgba(0, 0, 0, 0.4);
+  color: var(--cyber-accent);
+  border: 1px solid var(--cyber-accent-dim);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* --- Ant Design Component Overrides --- */
+
+/* Pagination */
+.forensic-table .ant-pagination-item {
+    background: transparent !important;
+    border: 1px solid rgba(0, 242, 255, 0.2) !important;
+}
+
+.forensic-table .ant-pagination-item-active {
+    background: rgba(0, 242, 255, 0.1) !important;
+    border-color: #00f2ff !important;
+}
+
+.forensic-table .ant-pagination-item a {
+    color: #8fb1cc !important;
+}
+
+.forensic-table .ant-pagination-item-active a {
+    color: #00f2ff !important;
+}
+
+/* Segmented Control */
+.ant-segmented {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(0, 242, 255, 0.1) !important;
+    color: #8fb1cc !important;
+}
+
+.ant-segmented-item-selected {
+    background: rgba(0, 242, 255, 0.1) !important;
+    color: #00f2ff !important;
+    box-shadow: 0 0 10px rgba(0, 242, 255, 0.2) !important;
+}
+
+/* Select & Select Dropdowns */
+.ant-select-selector {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(0, 242, 255, 0.2) !important;
+    color: #00f2ff !important;
+}
+
+.ant-select-dropdown {
+    background: rgba(5, 5, 16, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(0, 242, 255, 0.2) !important;
+}
+
+.ant-select-item {
+    color: #8fb1cc !important;
+}
+
+.ant-select-item-option-selected {
+    background: rgba(0, 242, 255, 0.1) !important;
+    color: #00f2ff !important;
+}
+
+.ant-select-item-option-active {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Secure Alert (Success) */
+.secure-alert {
+  background: rgba(0, 255, 100, 0.05) !important;
+  border: 1px solid rgba(0, 255, 100, 0.3) !important;
+  backdrop-filter: blur(10px);
+}
+
+.secure-alert .ant-alert-message {
+  color: var(--cyber-success) !important;
+  font-weight: bold !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.secure-alert .ant-alert-description {
+  color: var(--text-main) !important;
+}

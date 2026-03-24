@@ -33,6 +33,7 @@ function Login() {
       else if (role === 'FSL') navigate('/fsl-dashboard');
       else if (role === 'JUDICIARY') navigate('/judiciary-dashboard');
       else if (role === 'EVIDENCE_ROOM') navigate('/evidence-room-dashboard');
+      else if (role === 'ADMIN') navigate('/admin-dashboard');
       else navigate('/');
       
     } catch (err) {

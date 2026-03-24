@@ -1,6 +1,7 @@
 """
 Django settings for deps project — Digital Evidence Protection System.
 """
+import os
 from pathlib import Path
 from datetime import timedelta
 
@@ -27,7 +28,7 @@ INSTALLED_APPS = [
     'accounts',
     'cases',
     'evidence',
-    'audit',
+    'audit.apps.AuditConfig',
 ]
 
 MIDDLEWARE = [
@@ -61,24 +62,29 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'deps.wsgi.application'
 
-# ── Database: SQLite for development ─────────────────────────────────────────
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# ── Database ──────────────────────────────────────────────────────────────────
+# By default uses MySQL for permanent storage.
+# Set USE_SQLITE=1 in environment to fall back to SQLite (useful for tests/dev).
+# For MySQL, set DB_NAME / DB_USER / DB_PASSWORD / DB_HOST / DB_PORT env vars.
+if os.environ.get('USE_SQLITE', '0') == '1':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
-# To switch to MySQL, replace the above with:
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'deps_db',
-#         'USER': 'root',
-#         'PASSWORD': 'your-password',
-#         'HOST': '127.0.0.1',
-#         'PORT': '3306',
-#     }
-# }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME':     os.environ.get('DB_NAME',     'deps_db'),
+            'USER':     os.environ.get('DB_USER',     'root'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', 'root'),
+            'HOST':     os.environ.get('DB_HOST',     '127.0.0.1'),
+            'PORT':     os.environ.get('DB_PORT',     '3306'),
+            'OPTIONS':  {'charset': 'utf8mb4'},
+        }
+    }
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 

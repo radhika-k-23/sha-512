@@ -60,6 +60,18 @@ class IsPoliceOrReadOnly(BasePermission):
         return request.user.role == CustomUser.ROLE_POLICE
 
 
+class IsAdmin(BasePermission):
+    """Allow access only to ADMIN role users."""
+    message = "Access restricted to System Administrators."
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user and
+            request.user.is_authenticated and
+            request.user.role == CustomUser.ROLE_ADMIN
+        )
+
+
 class NoDeletePermission(BasePermission):
     """Block DELETE for every role — used on ActivityLog."""
     message = "Audit log entries cannot be deleted."

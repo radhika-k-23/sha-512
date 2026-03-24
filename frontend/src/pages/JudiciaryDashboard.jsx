@@ -8,11 +8,13 @@ import {
   LogoutOutlined, DownloadOutlined, HistoryOutlined,
   FileSearchOutlined as CaseIcon, FileProtectOutlined as EvidenceIcon,
   SafetyCertificateOutlined, CheckCircleOutlined, CloseCircleOutlined,
-  UserOutlined, ClockCircleOutlined, SwapOutlined
+  UserOutlined, ClockCircleOutlined, SwapOutlined, AuditOutlined
 } from '@ant-design/icons';
 import api from '../api/axiosClient';
 import DashboardStats from '../components/DashboardStats';
 import ChainOfCustody from '../components/ChainOfCustody';
+import AuditLogTable from '../components/AuditLogTable';
+import './ForensicTheme.css';
 
 const { Content } = Layout;
 const { Title, Text } = Typography;
@@ -56,7 +58,7 @@ function JudiciaryDashboard() {
     let endpoint = '';
     if (activeTab === 'cases') endpoint = 'cases/';
     else if (activeTab === 'evidence') endpoint = 'evidence/';
-    else if (activeTab === 'audit') endpoint = 'audit/';
+    else { setLoading(false); return; } // audit tab is self-managed by AuditLogTable
 
     try {
       const res = await api.get(endpoint, { params: { page, search: searchText } });
@@ -164,20 +166,6 @@ function JudiciaryDashboard() {
     }
   ];
 
-  const auditColumns = [
-    { title: 'Time', dataIndex: 'timestamp', key: 'time', render: (t) => new Date(t).toLocaleString() },
-    { title: 'User', dataIndex: 'user_name', key: 'user', render: (u) => u || 'System' },
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      key: 'action',
-      render: (a) => <Tag color={ACTION_COLOR[a] || 'default'}>{a}</Tag>
-    },
-    { title: 'Target', dataIndex: 'target', key: 'target', render: (t) => <Text code>{t}</Text> },
-    { title: 'IP', dataIndex: 'ip_address', key: 'ip' },
-    { title: 'Details', dataIndex: 'details', key: 'details', ellipsis: true },
-  ];
-
   const items = [
     {
       key: 'cases',
@@ -267,43 +255,51 @@ function JudiciaryDashboard() {
     {
       key: 'audit',
       label: <span><HistoryOutlined /> Tamper-Evident Audit Trail</span>,
-      children: <Table columns={auditColumns} dataSource={data} rowKey={(r, i) => i} loading={loading}
-        pagination={{ current: page, total, pageSize: 15, onChange: setPage }} size="middle" />
+      children: <AuditLogTable />
     }
   ];
 
   return (
-    <Layout className="layout" style={{ minHeight: '100vh', padding: '24px', paddingBottom: '80px' }}>
-      <Content>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-          <Title level={2} style={{ margin: 0 }}>
-            Judiciary Dashboard <Tag color="black" style={{ verticalAlign: 'middle', marginLeft: '12px' }}>Read-Only</Tag>
+    <Layout className="forensic-layout-dark">
+      <Content style={{ padding: '24px', paddingBottom: '80px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', background: 'rgba(5, 5, 16, 0.8)', padding: '15px 24px', borderBottom: '1px solid rgba(0, 242, 255, 0.2)', backdropFilter: 'blur(10px)', borderRadius: '8px' }}>
+          <Title level={2} style={{ margin: 0, color: '#00f2ff' }}>
+            <AuditOutlined /> <span style={{ color: '#00f2ff' }}>Judiciary Oversight Workspace</span>
+            <Tag color="black" style={{ verticalAlign: 'middle', marginLeft: '12px', border: '1px solid #00f2ff' }}>READ-ONLY</Tag>
           </Title>
-          <Button danger icon={<LogoutOutlined />} onClick={() => { localStorage.clear(); window.location.href = '/login'; }}>
+          <Button 
+            danger 
+            icon={<LogoutOutlined />} 
+            onClick={() => { localStorage.clear(); window.location.href = '/#/login'; }}
+          >
             Logout
           </Button>
         </div>
 
         <DashboardStats />
 
-        <Card
-          bordered={false}
-          className="shadow-sm"
-          extra={
-            <Input.Search
-              placeholder={`Search ${activeTab}...`}
-              onSearch={v => { setSearchText(v); setPage(1); }}
-              style={{ width: 250 }}
-              allowClear
+        <div className="animate-fade">
+          <Card
+            bordered={false}
+            className="forensic-panel"
+            extra={
+              <Input.Search
+                placeholder={`Search ${activeTab}...`}
+                onSearch={v => { setSearchText(v); setPage(1); }}
+                className="forensic-input"
+                style={{ width: 250 }}
+                allowClear
+              />
+            }
+          >
+            <Tabs
+              activeKey={activeTab}
+              onChange={(k) => { setActiveTab(k); setPage(1); setSearchText(''); setSelectedCaseId(null); setCaseIntegrity(null); }}
+              items={items}
+              className="forensic-tabs"
             />
-          }
-        >
-          <Tabs
-            activeKey={activeTab}
-            onChange={(k) => { setActiveTab(k); setPage(1); setSearchText(''); setSelectedCaseId(null); setCaseIntegrity(null); }}
-            items={items}
-          />
-        </Card>
+          </Card>
+        </div>
       </Content>
     </Layout>
   );

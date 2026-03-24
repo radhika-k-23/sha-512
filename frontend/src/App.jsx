@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { jwtDecode } from 'jwt-decode'
 import Login from './pages/Login'
+import AdminDashboard from './pages/AdminDashboard'
 import PoliceDashboard from './pages/PoliceDashboard'
 import FSLDashboard from './pages/FSLDashboard'
 import JudiciaryDashboard from './pages/JudiciaryDashboard'
@@ -33,6 +34,10 @@ function App() {
     <div style={{ padding: '0px' }}>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route
+          path="/admin-dashboard"
+          element={<ProtectedRoute element={<AdminDashboard />} requiredRole="ADMIN" />}
+        />
         <Route
           path="/police-dashboard"
           element={<ProtectedRoute element={<PoliceDashboard />} requiredRole="POLICE" />}

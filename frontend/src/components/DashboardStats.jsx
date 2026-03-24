@@ -28,32 +28,32 @@ const DashboardStats = () => {
     <div style={{ marginBottom: '24px' }}>
       <Row gutter={16}>
         <Col span={8}>
-          <Card bordered={false} className="shadow-sm">
+          <Card bordered={false} className="forensic-panel">
             <Statistic
-              title="Open Cases"
+              title={<span style={{ color: '#8fb1cc' }}>Open Cases</span>}
               value={stats.open_cases}
-              prefix={<FolderOpenOutlined />}
-              valueStyle={{ color: '#1890ff' }}
+              prefix={<FolderOpenOutlined style={{ color: '#00f2ff' }} />}
+              valueStyle={{ color: '#00f2ff', fontWeight: 'bold' }}
             />
           </Card>
         </Col>
         <Col span={8}>
-          <Card bordered={false} className="shadow-sm">
+          <Card bordered={false} className="forensic-panel">
             <Statistic
-              title="Pending Evidence Checks"
+              title={<span style={{ color: '#8fb1cc' }}>Pending Evidence Checks</span>}
               value={stats.pending_evidence}
-              prefix={<FileProtectOutlined />}
-              valueStyle={{ color: stats.pending_evidence > 0 ? '#faad14' : '#52c41a' }}
+              prefix={<FileProtectOutlined style={{ color: stats.pending_evidence > 0 ? '#faad14' : '#52c41a' }} />}
+              valueStyle={{ color: stats.pending_evidence > 0 ? '#faad14' : '#52c41a', fontWeight: 'bold' }}
             />
           </Card>
         </Col>
         <Col span={8}>
-          <Card bordered={false} className="shadow-sm">
+          <Card bordered={false} className="forensic-panel">
             <Statistic
-              title="System Integrity"
+              title={<span style={{ color: '#8fb1cc' }}>System Integrity</span>}
               value={stats.integrity_ok ? 'Secured' : 'Warning'}
-              prefix={stats.integrity_ok ? <CheckCircleOutlined /> : <WarningOutlined />}
-              valueStyle={{ color: stats.integrity_ok ? '#52c41a' : '#f5222d' }}
+              prefix={stats.integrity_ok ? <CheckCircleOutlined style={{ color: '#52c41a' }} /> : <WarningOutlined style={{ color: '#f5222d' }} />}
+              valueStyle={{ color: stats.integrity_ok ? '#52c41a' : '#f5222d', fontWeight: 'bold' }}
             />
           </Card>
         </Col>

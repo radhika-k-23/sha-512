@@ -30,14 +30,7 @@ class CaseViewSet(viewsets.ModelViewSet):
     search_fields = ['fir_number', 'title', 'description']
 
     def perform_create(self, serializer):
-        case = serializer.save(created_by=self.request.user)
-        ActivityLog.objects.create(
-            user=self.request.user,
-            action=ActivityLog.ACTION_VIEW,
-            target=f"case:{case.id}",
-            ip_address=_get_ip(self.request),
-            details=f"Case '{case.title}' created by {self.request.user.get_full_name()}.",
-        )
+        serializer.save(created_by=self.request.user)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()

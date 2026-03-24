@@ -20,7 +20,7 @@ function SystemHealthFooter() {
   // Poll every 30 seconds
   useEffect(() => {
     fetchHealth();
-    const interval = setInterval(fetchHealth, 30000);
+    const interval = setInterval(fetchHealth, 15000); // 15s refresh for tighter security pulse
     return () => clearInterval(interval);
   }, []);
 
